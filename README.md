@@ -43,6 +43,32 @@ pip install -r requirements.txt
 
 也支持同目录下其他 `.pth` / `.safetensors` 超分模型。
 
+## 测试环境
+
+本项目在以下环境验证可用（通过 `comfy_activate` 激活 ComfyUI 自带 venv：`source ~/ComfyUI/venv/bin/activate`）：
+
+| 项 | 版本 / 说明 |
+|---|---|
+| OS | Ubuntu 26.04.1 LTS（`zzh-ubuntu`，kernel 7.0.0） |
+| Python | 3.11.15（`~/ComfyUI/venv`） |
+| GPU | NVIDIA GeForce RTX 5080（16 GB，driver 610.43.02） |
+| CUDA（PyTorch） | 13.0（`torch 2.13.0+cu130`） |
+| torch | 2.13.0+cu130 |
+| numpy | 2.3.2 |
+| spandrel | 0.4.2 |
+| gradio | 6.22.0 |
+| Pillow | 12.3.0 |
+| OpenCV | 5.0.0（`cv2`） |
+| ffmpeg / ffprobe | 8.0.1 |
+
+启动示例：
+
+```bash
+comfy_activate   # alias → source ~/ComfyUI/venv/bin/activate
+cd /path/to/esrgan-upscale
+python gui.py
+```
+
 ## 启动
 
 ```bash
