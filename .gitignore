@@ -1,0 +1,21 @@
+# outputs / caches
+output/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+
+# editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# temp encode artifacts
+*.tmp.mp4
+*.tmp.aac
