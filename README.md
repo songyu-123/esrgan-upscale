@@ -26,14 +26,22 @@ pip install -r requirements.txt
 
 ## 准备模型
 
-默认从 ComfyUI 的超分模型目录读取：
+默认从 ComfyUI 的超分模型目录读取（可在 `gui.py` 里改 `MODEL_DIR`）：
 
 ```text
-~/ComfyUI/models/upscale_models/*.pth
-~/ComfyUI/models/upscale_models/*.safetensors
+~/ComfyUI/models/upscale_models/
 ```
 
-可在 `gui.py` 里改 `MODEL_DIR`。
+如果本地没有以下模型，可以通过下面的链接下载到指定位置：
+
+| 模型 | Hugging Face |
+|---|---|
+| `4x-AnimeSharp.pth` | [Kim2091/AnimeSharp](https://huggingface.co/Kim2091/AnimeSharp/blob/main/4x-AnimeSharp.pth) |
+| `4x_NMKD-Siax_200k.pth` | [uwg/upscaler](https://huggingface.co/uwg/upscaler/blob/main/ESRGAN/4x_NMKD-Siax_200k.pth) |
+| `4x_foolhardy_Remacri.pth` | [FacehugmanIII/4x_foolhardy_Remacri](https://huggingface.co/FacehugmanIII/4x_foolhardy_Remacri/blob/main/4x_foolhardy_Remacri.pth) |
+| `RealESRGAN_x2plus.pth` | [2kpr/Real-ESRGAN](https://huggingface.co/2kpr/Real-ESRGAN/blob/main/RealESRGAN_x2plus.pth) |
+
+也支持同目录下其他 `.pth` / `.safetensors` 超分模型。
 
 ## 启动
 
@@ -66,4 +74,6 @@ esrgan-upscale/
 
 ## License
 
-未单独声明许可证；使用前请同时遵守所加载 ESRGAN 模型与上游文章相关约定。
+**MIT**
+
+使用前请同时遵守所加载 ESRGAN 模型与上游文章相关约定。
