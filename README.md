@@ -1,56 +1,58 @@
+[中文文档](README.zh-CN.md)
+
 # Standalone ESRGAN Video Upscale
 
-基于 Gradio 的轻量视频超分前端：用 spandrel 直接加载 ESRGAN 类模型，**流式逐帧**放大，系统内存占用几乎恒定，适合显存/内存紧张的环境。
+A lightweight Gradio frontend for video upscaling: loads ESRGAN-class models via spandrel and upscales **frame-by-frame in a streaming pipeline**, keeping system RAM nearly constant — suited to low-VRAM / low-memory setups.
 
-## Credits / 致谢
+## Credits
 
-核心思路来自 [这篇文章](https://ai-hardware-zukan.com/en/comfyui-standalone-esrgan-video-4k-upscale-en/)（作者通过 spandrel 直接调用 ESRGAN 模型，实现流式低内存视频放大）。本项目在此基础上进行了实现、封装和 GUI 化。
+The core idea comes from [this article](https://ai-hardware-zukan.com/en/comfyui-standalone-esrgan-video-4k-upscale-en/) (the author calls ESRGAN models through spandrel for streaming, low-memory video upscaling). This project implements, packages, and GUI-wraps that approach.
 
-## 功能
+## Features
 
-- Gradio Web UI：上传视频、选模型、调 tile、看进度与结果
-- 流式解码 → tile 放大 → 编码，队列限深，降低内存峰值
-- 自动提取并回写音频
-- Tile 大小可调（显存不够就调小）
+- Gradio Web UI: upload a video, pick a model, tune tile size, watch progress and results
+- Streaming decode → tile upscale → encode, with a bounded queue to limit peak memory
+- Automatic audio extract and mux
+- Adjustable tile size (lower it when VRAM is tight)
 
-## 依赖
+## Requirements
 
-- Python 3.10+（建议）
-- NVIDIA GPU + CUDA（默认 `cuda:0`）
-- 系统已安装 `ffmpeg` / `ffprobe`
-- Python 包见 `requirements.txt`
+- Python 3.10+ (recommended)
+- NVIDIA GPU + CUDA (default `cuda:0`)
+- System `ffmpeg` / `ffprobe`
+- Python packages in `requirements.txt`
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 准备模型
+## Prepare models
 
-默认从 ComfyUI 的超分模型目录读取（可在 `gui.py` 里改 `MODEL_DIR`）：
+By default models are loaded from the ComfyUI upscale models folder (change `MODEL_DIR` in `gui.py` if needed):
 
 ```text
 ~/ComfyUI/models/upscale_models/
 ```
 
-如果本地没有以下模型，可以通过下面的链接下载到指定位置：
+If you do not have the following models locally, download them from the links below into that folder:
 
-| 模型 | Hugging Face |
+| Model | Hugging Face |
 |---|---|
 | `4x-AnimeSharp.pth` | [Kim2091/AnimeSharp](https://huggingface.co/Kim2091/AnimeSharp/blob/main/4x-AnimeSharp.pth) |
 | `4x_NMKD-Siax_200k.pth` | [uwg/upscaler](https://huggingface.co/uwg/upscaler/blob/main/ESRGAN/4x_NMKD-Siax_200k.pth) |
 | `4x_foolhardy_Remacri.pth` | [FacehugmanIII/4x_foolhardy_Remacri](https://huggingface.co/FacehugmanIII/4x_foolhardy_Remacri/blob/main/4x_foolhardy_Remacri.pth) |
 | `RealESRGAN_x2plus.pth` | [2kpr/Real-ESRGAN](https://huggingface.co/2kpr/Real-ESRGAN/blob/main/RealESRGAN_x2plus.pth) |
 
-也支持同目录下其他 `.pth` / `.safetensors` 超分模型。
+Other `.pth` / `.safetensors` upscalers in the same folder are also supported.
 
-## 测试环境
+## Tested environment
 
-| 项 | 版本 / 说明 |
+| Item | Version / notes |
 |---|---|
 | OS | Ubuntu 26.04.1 LTS |
 | Python | 3.11.15 |
-| GPU | NVIDIA GeForce RTX 5080（16 GB） |
-| CUDA（PyTorch） | 13.0 |
+| GPU | NVIDIA GeForce RTX 5080 (16 GB) |
+| CUDA (PyTorch) | 13.0 |
 | torch | 2.13.0+cu130 |
 | numpy | 2.3.2 |
 | spandrel | 0.4.2 |
@@ -59,38 +61,38 @@ pip install -r requirements.txt
 | OpenCV | 5.0.0 |
 | ffmpeg / ffprobe | 8.0.1 |
 
-
-## 启动
+## Run
 
 ```bash
 python gui.py
 ```
 
-浏览器打开 `http://127.0.0.1:7860`（默认监听 `0.0.0.0:7860`）。
+Open `http://127.0.0.1:7860` in a browser (listens on `0.0.0.0:7860` by default).
 
-输出默认写到项目下的 `output/`（该目录不会进仓库）。
+Outputs are written under `output/` (gitignored).
 
-## 项目结构
+## Project layout
 
 ```text
 esrgan-upscale/
-├── engine.py          # 流式放大核心（ffprobe/ffmpeg + spandrel tile）
-├── gui.py             # Gradio 前端
+├── engine.py          # streaming upscale core (ffprobe/ffmpeg + spandrel tiling)
+├── gui.py             # Gradio UI
 ├── requirements.txt
 ├── README.md
-└── output/            # 本地输出（已 gitignore）
+├── README.zh-CN.md
+└── output/            # local outputs (gitignored)
 ```
 
-## 参数提示
+## Tips
 
-| 项 | 说明 |
+| Item | Notes |
 |---|---|
-| Tile | 默认 `768`；OOM 时降到 `512` / `384` |
-| 设备 | `engine.upscale_video(..., device="cuda:0")` |
-| 编码 | H.264，`crf=10`，`preset=medium` |
+| Tile | Default `768`; try `512` / `384` on OOM |
+| Device | `engine.upscale_video(..., device="cuda:0")` |
+| Encode | H.264, `crf=10`, `preset=medium` |
 
 ## License
 
 **MIT**
 
-使用前请同时遵守所加载 ESRGAN 模型与上游文章相关约定。
+Please also follow the terms of any ESRGAN models you load and of the upstream article.
